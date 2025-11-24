@@ -2,154 +2,109 @@
 <html>
 <head>
 <meta charset="UTF-8">
-
 <title>UnGram</title>
 
 <style>
 /* ==========================
+   THEME VARIABLES
+========================== */
+:root {
+    --bg: #111; --text: #eee; --box-border: #777; --box-hover: #222;
+    --row-bg: #1a1a1a; --link: #66aaff; --remove: #c62828; --remove-hover: #b71c1c;
+    --btn-bg: black; --btn-hover: #222; --textarea-bg: #000; --textarea-text: #0f0;
+    --heading-text: #66aaff;   
+    --result-text: #0f0;      
+}
+.light {
+    --bg: #f7f7f7; --text: #111; --box-border: #999; --box-hover: #ddd;
+    --row-bg: #fff; --link: #0066cc; --remove: #d9534f; --remove-hover: #c9302c;
+    --btn-bg: #fff; --btn-hover: #eee; --textarea-bg: #fafafa; --textarea-text: #333;
+    --heading-text: #0066cc;
+    --result-text: #333;
+}
+.barbie {
+    --bg: #ffe4f7; --text: #a0006b; --box-border: #ff7bd8; --box-hover: #ffd0f2;
+    --row-bg: #fff0fb; --link: #ff00aa; --remove: #ff3c8c; --remove-hover: #e6006e;
+    --btn-bg: #ffb3e6; --btn-hover: #ff99df; --textarea-bg: #ffe0f5; --textarea-text: #c20087;
+    background-image: repeating-linear-gradient(45deg, #ffd6f2 0 10px, #ffe9f9 10px 20px);
+    --heading-text: #ff00aa;
+    --result-text: #c20087;
+}
+
+/* ==========================
    GENERAL STYLES
 ========================== */
 body {
-    font-family: Arial, sans-serif;
-    max-width: 100%;       
-    margin: 10px;         
+    font-family: Arial;
+    max-width: 600px;
+    margin: 30px auto;
     padding: 20px;
     background: var(--bg);
     color: var(--text);
     transition: 0.3s;
 }
 
+h2 { font-family: 'Arial', sans-serif; font-weight: bold; font-style: italic; font-size: 32px; letter-spacing: 1px; text-align: center; color: #fff; margin-bottom: 20px; color: var(--heading-text); }
+h3 { font-family: 'Brush Script MT', cursive, 'Segoe Script', sans-serif; font-size: 22px; text-align:center; color: #ccc; margin-bottom: 20px; color: var(--heading-text);  }
 
-@media screen and (min-width: 769px) {
-    body {
-        max-width: 600px;
-        margin: 30px auto;
-    }
+/* THEME & INFO BUTTONS */
+#themeToggle, #zipBtn {
+    position: fixed; top: 15px; padding: 8px 14px; border-radius: 8px; background: var(--btn-bg); color: var(--text); border: 1px solid #666; cursor:pointer; z-index:999; transition:0.3s;
 }
+#themeToggle { right:15px; }
+#zipBtn { left:15px; }
+#themeToggle:hover, #zipBtn:hover { background: var(--btn-hover); }
 
-/* THEME VARIABLES */
-:root {
-    --bg: #111; --text: #eee; --box-border: #777; --box-hover: #222;
-    --row-bg: #1a1a1a; --link: #66aaff; --remove: #c62828; --remove-hover: #b71c1c;
-    --btn-bg: black; --btn-hover: #222; --textarea-bg: #000; --textarea-text: #0f0;
+#infoIcon {
+    position: fixed; top:28px; right:100px; width:28px; height:28px; background: var(--row-bg); color: var(--text); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; cursor:pointer; box-shadow:0 0 5px rgba(0,0,0,0.5); z-index:1000; transition:0.2s;
 }
-
-/* Light mode */
-.light {
-    --bg: #f7f7f7; --text: #111; --box-border: #999; --box-hover: #ddd;
-    --row-bg: #fff; --link: #0066cc; --remove: #d9534f; --remove-hover: #c9302c;
-    --btn-bg: #fff; --btn-hover: #eee; --textarea-bg: #fafafa; --textarea-text: #333;
-}
-
-/* Barbie glitter mode */
-.barbie {
-    --bg: #ffe4f7; --text: #a0006b; --box-border: #ff7bd8; --box-hover: #ffd0f2;
-    --row-bg: #fff0fb; --link: #ff00aa; --remove: #ff3c8c; --remove-hover: #e6006e;
-    --btn-bg: #ffb3e6; --btn-hover: #ff99df; --textarea-bg: #ffe0f5; --textarea-text: #c20087;
-    background-image: repeating-linear-gradient(45deg, #ffd6f2 0 10px, #ffe9f9 10px 20px);
-}
-
-/* BUTTONS AND BOXES */
-button, .box {
-    cursor: pointer;
-    border-radius: 6px;
-    transition: 0.3s;
-}
-
-/* Drag/Drop boxes */
-.box {
-    border: 2px dashed var(--box-border);
-    padding: 15px;
-    margin: 10px 0;
-    text-align: center;
-}
-.box:hover { background: var(--box-hover); }
-
-/* Username rows */
-.user-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--row-bg);
-    padding: 6px 10px;
-    margin: 4px 0;
-    border-radius: 5px;
-}
-.user-row a { color: var(--link); text-decoration: none; }
-.user-row a:hover { text-decoration: underline; }
-
-/* Remove buttons */
-.remove-btn {
-    background: var(--remove);
-    color: white;
-    border: none;
-    padding: 4px 10px;
-    font-size: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.remove-btn:hover { background: var(--remove-hover); }
-
-/* Textarea */
-textarea {
-    width: 100%;
-    height: 150px;
-    margin-top: 10px;
-    background: var(--textarea-bg);
-    color: var(--textarea-text);
-    padding: 10px;
-    border-radius: 6px;
-}
+#infoIcon:hover { background: var(--box-hover); }
 
 /* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background: var(--row-bg);
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 400px;
-    color: var(--text);
-}
+.modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content:center; align-items:center; }
+.modal-content { background: var(--row-bg); padding:20px; border-radius:10px; max-width:400px; color: var(--text); }
+.modal .close { background:transparent; border:none; color: var(--link); font-size:18px; cursor:pointer; float:right; }
 
-/* Info panel inside modal */
-#infoPanel h3 { margin-top:0; text-align:center; }
-#infoPanel ol { padding-left: 20px; }
-#infoPanel li { margin: 10px 0; padding: 8px; border-radius: 8px; background: var(--box-hover); }
+/* BOXES */
+.box { border:2px dashed var(--box-border); padding:15px; margin:10px 0; text-align:center; border-radius:8px; cursor:pointer; }
+.box:hover { background: var(--box-hover); }
 
-/* Theme toggle & icons */
-#themeToggle, #zipBtn, #infoIcon {
-    padding: 8px 14px;
-    font-size: 14px;
-    border-radius: 8px;
-}
+#result { color: var(--result-text); }
 
-/* MOBILE RESPONSIVE */
-@media screen and (max-width: 768px) {
-    h2, h3 { font-size: 18px; }
-    .box { font-size: 14px; padding: 12px; }
-    button, #undoBtn { width: 100%; font-size: 14px; padding: 10px 0; margin-top: 6px; }
-    .user-row { flex-direction: column; align-items: flex-start; padding: 8px; }
-    .user-row a { margin-bottom: 6px; }
-    textarea { height: 120px; font-size: 14px; }
-    #themeToggle, #zipBtn, #infoIcon { padding: 6px 10px; font-size: 12px; position: relative; margin: 5px 2px; top:auto; right:auto; left:auto; }
+/* RESULTS */
+.user-row { display:flex; justify-content:space-between; align-items:center; background: var(--row-bg); padding:6px 10px; margin:4px 0; border-radius:5px; }
+.user-row a { color: var(--link); text-decoration:none; }
+.user-row a:hover { text-decoration:underline; }
+.remove-btn { background: var(--remove); color:white; border:none; padding:4px 10px; font-size:12px; border-radius:4px; cursor:pointer; }
+.remove-btn:hover { background: var(--remove-hover); }
+
+#undoBtn { background: #444; margin-top: 10px; }
+#undoBtn:hover { background: #555; }
+
+textarea { width:100%; height:150px; margin-top:10px; background: var(--textarea-bg); color: var(--textarea-text); padding:10px; border-radius:6px; }
+
+button { padding:10px 14px; margin:8px 4px; background: var(--btn-bg); color: var(--text); border:1px solid #444; border-radius:6px; cursor:pointer; }
+button:hover { background: var(--btn-hover); }
+
+/* ==========================
+   MEDIA QUERIES
+========================== */
+@media screen and (max-width:768px){
+    body{margin:10px;padding:10px;}
+    h2,h3{font-size:18px;}
+    .box{padding:12px;font-size:14px;}
+    #undoBtn,button,#themeToggle,#zipBtn,#infoIcon{width:100%; margin-top:6px; font-size:14px; position:relative; top:auto; left:auto; right:auto;}
+    .user-row{flex-direction:column;align-items:flex-start;padding:8px;}
+    .user-row a{margin-bottom:6px;}
+    textarea{height:120px;font-size:14px;}
 }
 </style>
 </head>
 <body>
 
 <button id="themeToggle" onclick="switchTheme()">Theme</button>
+<button id="zipBtn" onclick="location.href='zip.html'">Zip Extractor</button>
 <div id="infoIcon" onclick="showInfo()">?</div>
-<button id="zipBtn" onclick="location.href='zip.html'" style="position: fixed; top: 15px; left: 15px; z-index:999; padding:8px 14px; border-radius:8px; background:var(--btn-bg); color:var(--text); border:1px solid #666;">Zip Check</button>
-
 
 <h2>Sleezy Unfollowers Check</h2>
 
@@ -167,58 +122,49 @@ textarea {
 
 <h3>Results</h3>
 <div id="result"></div>
-
 <textarea id="output"></textarea>
 
 <!-- INFO MODAL -->
 <div id="infoModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="hideInfo()">&times;</span>
-        <div id="infoPanel">
-            <h3>📥 How to Export Your Instagram Data</h3>
-            <ol>
-                <li>⚙️ Open <b>Settings</b> → <b>Accounts Center</b> → <b>Your information and permissions</b></li>
-                <li>⬇️ Select <b>Download your information</b> → <b>Create export</b> → <b>Export to device</b></li>
-                <li>📝 Customize: Turn ON only <b>Followers</b> & <b>Following</b>, date range: <b>All time</b></li>
-                <li>⏳ Wait for download (device or email)</li>
-                <li>📂 Open folder → find <b>followers_1</b> & <b>following</b> files (HTML or JSON)</li>
-            </ol>
-        </div>
+  <div class="modal-content">
+    <span class="close" onclick="hideInfo()">&times;</span>
+    <div id="infoPanel">
+      <h3>📥 How to Export Your Instagram Data</h3>
+      <ol>
+        <li>⚙️ Open <b>Settings</b> → <b>Accounts Center</b> → <b>Your information and permissions</b></li>
+        <li>⬇️ Select <b>Download your information</b> → <b>Create export</b> → <b>Export to device</b></li>
+        <li>📝 Customize: Turn ON only <b>Followers</b> & <b>Following</b>, date range: <b>All time</b></li>
+        <li>⏳ Wait for download (device or email)</li>
+        <li>📂 Open folder → find <b>followers_1</b> & <b>following</b> files (HTML or JSON)</li>
+        <li>💡 Optional: Upload the ZIP file into <b>Zip Extractor</b> to automatically extract followers/following files</li>
+      </ol>
     </div>
+  </div>
 </div>
 
 <script>
-/* THEME SYSTEM */
-const themes = ["dark","light","barbie"];
-let themeIndex = 0;
-function loadTheme() {
-    const saved = localStorage.getItem("theme");
-    if(saved && themes.includes(saved)) { document.body.className = saved; themeIndex = themes.indexOf(saved); }
-}
+/* THEME */
+const themes=["dark","light","barbie"]; let themeIndex=0;
+function loadTheme(){ const saved=localStorage.getItem("theme"); if(saved && themes.includes(saved)){document.body.className=saved; themeIndex=themes.indexOf(saved);}}
 loadTheme();
-function switchTheme() {
-    themeIndex = (themeIndex+1)%themes.length;
-    const t = themes[themeIndex];
-    document.body.className = t;
-    localStorage.setItem("theme",t);
-}
+function switchTheme(){ themeIndex=(themeIndex+1)%themes.length; const t=themes[themeIndex]; document.body.className=t; localStorage.setItem("theme",t); }
 
 /* INFO MODAL */
 function showInfo(){ document.getElementById("infoModal").style.display="flex"; }
 function hideInfo(){ document.getElementById("infoModal").style.display="none"; }
-window.onclick = e => { if(e.target === document.getElementById("infoModal")) hideInfo(); };
+window.onclick=e=>{ if(e.target===document.getElementById("infoModal")) hideInfo(); }
 
-/* DRAG & DROP */
+/* DRAG & DROP FILES */
+function setup(boxId,inputId){
+  const box=document.getElementById(boxId), input=document.getElementById(inputId);
+  box.onclick=()=>input.click();
+  box.ondragover=e=>{e.preventDefault();box.style.background="var(--box-hover)";}
+  box.ondragleave=()=>box.style.background="";
+  box.ondrop=e=>{e.preventDefault();box.style.background="";input.files=e.dataTransfer.files; box.textContent=input.files[0].name;}
+  input.onchange=()=>{if(input.files.length)box.textContent=input.files[0].name;}
+}
 setup("followersBox","followersFile");
 setup("followingBox","followingFile");
-function setup(boxId,inputId){
-    const box=document.getElementById(boxId), input=document.getElementById(inputId);
-    box.onclick=()=>input.click();
-    box.ondragover=e=>{ e.preventDefault(); box.style.background="var(--box-hover)"; };
-    box.ondragleave=()=>box.style.background="";
-    box.ondrop=e=>{ e.preventDefault(); box.style.background=""; input.files=e.dataTransfer.files; box.textContent=input.files[0].name; };
-    input.onchange=()=>{ if(input.files.length) box.textContent=input.files[0].name; };
-}
 
 /* COMPARE & PARSING */
 let globalFollowers=[], globalFollowing=[], globalList=[], lastRemoved=null;
@@ -333,5 +279,6 @@ window.addEventListener("load", () => {
 
 
 </script>
+
 </body>
 </html>
