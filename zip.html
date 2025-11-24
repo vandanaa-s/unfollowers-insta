@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Zip Extractor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+
+body {
+    font-family: 'Verdana', 'Arial', sans-serif;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #f0eaff;
+    color: #3b2a5c;
+}
+
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: #d36ffb;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+/* Flex layout */
+.flex-container {
+    display: flex;
+    gap: 30px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: #e8dcff;
+    padding: 15px;
+    border-radius: 16px;
+    max-height: 700px;
+    overflow-y: auto;
+    border: 2px solid #d3a0ff;
+}
+.sidebar h3 {
+    margin-top: 0;
+    text-align: center;
+    color: #a020f0;
+    font-weight: bold;
+}
+.file-item {
+    padding: 10px 12px;
+    margin: 8px 0;
+    background: #f3e0ff;
+    border-radius: 12px;
+    cursor: grab;
+    transition: 0.2s;
+    color: #3b2a5c;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 1px solid #d3a0ff;
+}
+.file-item:hover {
+    background: #e0c8ff;
+    border-color: #c080ff;
+}
+
+/* Main area */
+.flex-column {
+    flex: 1;
+}
+.box {
+    border: 2px solid #d36ffb;
+    padding: 25px;
+    margin: 15px 0;
+    text-align: center;
+    border-radius: 16px;
+    cursor: pointer;
+    background: linear-gradient(145deg, #f9eaff, #e8dcff);
+    color: #3b2a5c;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.2s;
+}
+.box:hover {
+    background: linear-gradient(145deg, #f1d9ff, #dcc8ff);
+    border-color: #a020f0;
+}
+
+#checkoutBtn {
+    padding: 12px 22px;
+    margin-top: 20px;
+    background: linear-gradient(145deg, #d36ffb, #a020f0);
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s;
+}
+#checkoutBtn:hover {
+    background: linear-gradient(145deg, #a020f0, #d36ffb);
+}
+
+/* Responsive */
+@media screen and (max-width: 900px) {
+    .flex-container { flex-direction: column; }
+    .sidebar { width: 100%; margin-bottom: 20px; max-height: 300px; }
+}
+</style>
+</head>
+<body>
+
+<h2> ZIP Extractor</h2>
+
+<div class="flex-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>ZIP Files</h3>
+        <div id="fileList">Drop ZIP above</div>
+    </div>
+
+    <!-- Main area -->
+    <div class="flex-column">
+        <div class="box" id="zipBox">Click or Drop ZIP File</div>
+        <b>Drag file to corresponding box:</b>
+        <div class="box" id="followersBox">Followers Box</div>
+        <div class="box" id="followingBox">Following Box</div>
+        <button id="checkoutBtn">Send to Main Page</button>
+    </div>
+</div>
+
+<input type="file" id="zipFile" hidden>
+
+<script>
+const zipBox = document.getElementById('zipBox');
+const zipInput = document.getElementById('zipFile');
+const fileList = document.getElementById('fileList');
+const followersBox = document.getElementById('followersBox');
+const followingBox = document.getElementById('followingBox');
+const checkoutBtn = document.getElementById('checkoutBtn');
+
+let filesFromZip = []; 
+
+// ZIP input handlers
+zipBox.onclick = () => zipInput.click();
+zipBox.ondragover = e => { e.preventDefault(); zipBox.style.background="#f1d9ff"; };
+zipBox.ondragleave = () => zipBox.style.background="linear-gradient(145deg, #f9eaff, #e8dcff)";
+zipBox.ondrop = e => { e.preventDefault(); zipBox.style.background="linear-gradient(145deg, #f9eaff, #e8dcff)"; handleZip(e.dataTransfer.files[0]); };
+zipInput.onchange = () => { if(zipInput.files.length) handleZip(zipInput.files[0]); };
+
+// Handle ZIP file
+async function handleZip(file) {
+    if(!file.name.endsWith('.zip')) { alert('Not a ZIP file'); return; }
+
+    const jszip = new JSZip();
+    const zip = await jszip.loadAsync(file);
+    fileList.innerHTML = '';
+    filesFromZip = [];
+
+    const entries = Object.values(zip.files).filter(f => {
+        if(f.dir) return false;
+        const name = f.name.toLowerCase();
+        return name.endsWith('followers.json') || name.endsWith('following.json') ||
+               name.endsWith('followers_1.json') || name.endsWith('followers.html') ||
+               name.endsWith('following.html');
+    });
+
+    for(const f of entries){
+        const content = await f.async("text");
+        const filename = f.name.split('/').pop(); // only filename
+        const fileObj = {name: filename, content: content, type: null};
+        filesFromZip.push(fileObj);
+
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.textContent = filename;
+        div.draggable = true;
+        div.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', filename));
+        fileList.appendChild(div);
+    }
+}
+
+// Followers/Following drop
+function makeDropTarget(box, type){
+    box.ondragover = e => e.preventDefault();
+    box.ondrop = async e => {
+        e.preventDefault();
+        const name = e.dataTransfer.getData("text/plain");
+        const fileObj = filesFromZip.find(f => f.name === name);
+        if(!fileObj) return;
+        fileObj.type = type;
+        box.textContent = fileObj.name;
+    };
+}
+
+makeDropTarget(followersBox, 'followers');
+makeDropTarget(followingBox, 'following');
+
+// Checkout
+checkoutBtn.onclick = () => {
+    const selectedFiles = filesFromZip.filter(f => f.type);
+    if(selectedFiles.length === 0){ alert("Select at least one file"); return; }
+    localStorage.setItem('zipFiles', JSON.stringify(selectedFiles));
+    window.location.href = 'index.html';
+};
+</script>
+
+</body>
+</html>

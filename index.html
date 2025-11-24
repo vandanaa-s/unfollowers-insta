@@ -2,107 +2,50 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>IG Checker — Clean Version</title>
+<title>UnGram</title>
 
 <style>
-
-/* For screens smaller than 600px (phones) */
+/* ==========================
+   MOBILE RESPONSIVE
+========================== */
 @media screen and (max-width: 600px) {
-    body {
-        margin: 10px;
-        padding: 10px;
-    }
-
-    .box {
-        padding: 12px;
-        font-size: 14px;
-    }
-
-    #undoBtn {
-        width: 100%;
-        margin-top: 6px;
-    }
-
-    .user-row {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 8px;
-    }
-
-    .user-row a {
-        margin-bottom: 6px;
-    }
-
-    .remove-btn {
-        padding: 6px 12px;
-        font-size: 14px;
-    }
-
-    textarea {
-        height: 120px;
-        font-size: 14px;
-    }
-
-    button {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
+    body { margin: 10px; padding: 10px; }
+    .box { padding: 12px; font-size: 14px; }
+    #undoBtn { width: 100%; margin-top: 6px; }
+    .user-row { flex-direction: column; align-items: flex-start; padding: 8px; }
+    .user-row a { margin-bottom: 6px; }
+    .remove-btn { padding: 6px 12px; font-size: 14px; }
+    textarea { height: 120px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; }
 }
 
-/* =====================================================
-   BASE + THEME VARIABLES
-===================================================== */
+/* ==========================
+   THEME VARIABLES
+========================== */
 :root {
-    --bg: #111;
-    --text: #eee;
-    --box-border: #777;
-    --box-hover: #222;
-    --row-bg: #1a1a1a;
-    --link: #66aaff;
-    --remove: #c62828;
-    --remove-hover: #b71c1c;
-    --btn-bg: black;
-    --btn-hover: #222;
-    --textarea-bg: #000;
-    --textarea-text: #0f0;
+    --bg: #111; --text: #eee; --box-border: #777; --box-hover: #222;
+    --row-bg: #1a1a1a; --link: #66aaff; --remove: #c62828; --remove-hover: #b71c1c;
+    --btn-bg: black; --btn-hover: #222; --textarea-bg: #000; --textarea-text: #0f0;
 }
 
 /* Light mode */
 .light {
-    --bg: #f7f7f7;
-    --text: #111;
-    --box-border: #999;
-    --box-hover: #ddd;
-    --row-bg: #fff;
-    --link: #0066cc;
-    --remove: #d9534f;
-    --remove-hover: #c9302c;
-    --btn-bg: #fff;
-    --btn-hover: #eee;
-    --textarea-bg: #fafafa;
-    --textarea-text: #333;
+    --bg: #f7f7f7; --text: #111; --box-border: #999; --box-hover: #ddd;
+    --row-bg: #fff; --link: #0066cc; --remove: #d9534f; --remove-hover: #c9302c;
+    --btn-bg: #fff; --btn-hover: #eee; --textarea-bg: #fafafa; --textarea-text: #333;
 }
 
 /* Barbie glitter mode */
 .barbie {
-    --bg: #ffe4f7;
-    --text: #a0006b;
-    --box-border: #ff7bd8;
-    --box-hover: #ffd0f2;
-    --row-bg: #fff0fb;
-    --link: #ff00aa;
-    --remove: #ff3c8c;
-    --remove-hover: #e6006e;
-    --btn-bg: #ffb3e6;
-    --btn-hover: #ff99df;
-    --textarea-bg: #ffe0f5;
-    --textarea-text: #c20087;
+    --bg: #ffe4f7; --text: #a0006b; --box-border: #ff7bd8; --box-hover: #ffd0f2;
+    --row-bg: #fff0fb; --link: #ff00aa; --remove: #ff3c8c; --remove-hover: #e6006e;
+    --btn-bg: #ffb3e6; --btn-hover: #ff99df; --textarea-bg: #ffe0f5; --textarea-text: #c20087;
     background-image: repeating-linear-gradient(45deg, #ffd6f2 0 10px, #ffe9f9 10px 20px);
 }
 
-/* =====================================================
+/* ==========================
    GENERAL STYLES
-===================================================== */
+========================== */
 body {
     font-family: Arial;
     max-width: 600px;
@@ -115,166 +58,71 @@ body {
 
 /* Theme switch button */
 #themeToggle {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    padding: 8px 14px;
-    border-radius: 8px;
-    background: var(--btn-bg);
-    border: 1px solid #666;
-    color: var(--text);
-    cursor: pointer;
-    z-index: 999;
+    position: fixed; top: 15px; right: 15px; padding: 8px 14px; border-radius: 8px;
+    background: var(--btn-bg); border: 1px solid #666; color: var(--text); cursor: pointer; z-index: 999;
 }
-#themeToggle:hover {
-    background: var(--btn-hover);
+#themeToggle:hover { background: var(--btn-hover); }
+
+/* Info icon */
+#infoIcon {
+    position: fixed; top: 28px; right: 100px; width: 28px; height: 28px;
+    background: var(--row-bg); color: var(--text); border-radius: 50%;
+    display: flex; justify-content: center; align-items: center; font-weight: bold;
+    cursor: pointer; box-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 1000; transition: 0.2s;
 }
+#infoIcon:hover { background: var(--box-hover); }
+
+/* Modal */
+.modal {
+    display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); justify-content: center; align-items: center;
+}
+.modal-content {
+    background: var(--row-bg); padding: 20px; border-radius: 10px; max-width: 400px; color: var(--text);
+}
+.modal .close {
+    background: transparent; border: none; color: var(--link); font-size: 18px; cursor: pointer; float: right;
+}
+
+/* Info panel inside modal */
+#infoPanel {
+    padding: 10px; border-radius: 12px; font-family: Arial, sans-serif;
+}
+#infoPanel h3 { margin-top:0; text-align:center; }
+#infoPanel ol { padding-left: 20px; }
+#infoPanel li { margin: 10px 0; padding: 8px; border-radius: 8px; background: var(--box-hover); }
 
 /* Drag/Drop boxes */
 .box {
-    border: 2px dashed var(--box-border);
-    padding: 15px;
-    margin: 10px 0;
-    text-align: center;
-    border-radius: 8px;
-    cursor: pointer;
+    border: 2px dashed var(--box-border); padding: 15px; margin: 10px 0; text-align: center;
+    border-radius: 8px; cursor: pointer;
 }
-.box:hover {
-    background: var(--box-hover);
-}
+.box:hover { background: var(--box-hover); }
 
 /* Username rows */
-.user-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--row-bg);
-    padding: 6px 10px;
-    margin: 4px 0;
-    border-radius: 5px;
-}
-
-/* Links */
-.user-row a {
-    color: var(--link);
-    text-decoration: none;
-}
-.user-row a:hover {
-    text-decoration: underline;
-}
-
-/* Remove button */
-.remove-btn {
-    background: var(--remove);
-    color: white;
-    border: none;
-    padding: 4px 10px;
-    font-size: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.remove-btn:hover {
-    background: var(--remove-hover);
-}
-
-/* Undo button */
-#undoBtn {
-    background: #444;
-    margin-top: 10px;
-}
-#undoBtn:hover {
-    background: #555;
-}
-
-/* Tutorial box */
-#tutorialBox {
-    background: var(--row-bg);
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    display: none;
-}
-
-/* Toggle link */
-#tutorialToggle {
-    color: var(--link);
-    cursor: pointer;
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
+.user-row { display: flex; justify-content: space-between; align-items: center; background: var(--row-bg); padding: 6px 10px; margin: 4px 0; border-radius: 5px; }
+.user-row a { color: var(--link); text-decoration: none; }
+.user-row a:hover { text-decoration: underline; }
+.remove-btn { background: var(--remove); color: white; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+.remove-btn:hover { background: var(--remove-hover); }
+#undoBtn { background: #444; margin-top: 10px; }
+#undoBtn:hover { background: #555; }
 textarea {
-    width: 100%;
-    height: 150px;
-    margin-top: 10px;
-    background: var(--textarea-bg);
-    color: var(--textarea-text);
-    padding: 10px;
-    border-radius: 6px;
+    width: 100%; height: 150px; margin-top: 10px; background: var(--textarea-bg); color: var(--textarea-text); padding: 10px; border-radius: 6px;
 }
+button { padding: 10px 14px; margin: 8px 4px; background: var(--btn-bg); color: var(--text); border: 1px solid #444; border-radius: 6px; cursor: pointer; }
+button:hover { background: var(--btn-hover); }
 
-button {
-    padding: 10px 14px;
-    margin: 8px 4px;
-    background: var(--btn-bg);
-    color: var(--text);
-    border: 1px solid #444;
-    border-radius: 6px;
-    cursor: pointer;
-}
-button:hover {
-    background: var(--btn-hover);
-}
 </style>
 </head>
-
 <body>
 
 <button id="themeToggle" onclick="switchTheme()">Theme</button>
+<div id="infoIcon" onclick="showInfo()">?</div>
+<button id="zipBtn" onclick="location.href='zip.html'" style="position: fixed; top: 15px; left: 15px; z-index:999; padding:8px 14px; border-radius:8px; background:var(--btn-bg); color:var(--text); border:1px solid #666;">Zip Check</button>
 
-<h2>Instagram Non-Following Bitches</h2>
 
-<!-- TUTORIAL TOGGLE -->
-<div id="tutorialToggle" onclick="toggleTutorial()">How to get your Instagram data ▼</div>
-
-<!-- TUTORIAL BOX -->
-<div id="tutorialBox">
-    <b>To export your followers & following data:</b>
-    <ol>
-        <li>Open <b>Settings</b> on Instagram</li>
-        <li>Go to <b>Accounts Center</b></li>
-        <li>Select <b>Your information and permissions</b></li>
-        <li>Choose <b>Download your information</b></li>
-        <li>Tap <b>Create export</b></li>
-        <li>Choose <b>Export to device</b></li>
-        <li>
-            Under <b>Customize information</b>:
-            <ul>
-                <li>Turn ON only: <b>Followers</b> & <b>Following</b></li>
-                <li>Date range: <b>All time</b></li>
-            </ul>
-        </li>
-        <li>Start export & wait for download (device OR email)</li>
-        <li>Open the exported folder → Find:
-            <ul>
-                <li><b>followers_1</b></li>
-                <li><b>following</b></li>
-            </ul>
-            Acceptable formats: <b>HTML</b> or <b>JSON</b>
-        </li>
-    </ol>
-</div>
-
-<script>
-function toggleTutorial() {
-    const box = document.getElementById("tutorialBox");
-    const toggle = document.getElementById("tutorialToggle");
-    const show = box.style.display === "none";
-
-    box.style.display = show ? "block" : "none";
-    toggle.innerHTML = show ? "How to get your Instagram data ▲" : "How to get your Instagram data ▼";
-}
-</script>
+<h2>Sleezy Unfollowers Check</h2>
 
 <b>Followers File</b>
 <div class="box" id="followersBox">Click or Drop Followers File</div>
@@ -293,236 +141,168 @@ function toggleTutorial() {
 
 <textarea id="output"></textarea>
 
+<!-- INFO MODAL -->
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="hideInfo()">&times;</span>
+        <div id="infoPanel">
+            <h3>📥 How to Export Your Instagram Data</h3>
+            <ol>
+                <li>⚙️ Open <b>Settings</b> → <b>Accounts Center</b> → <b>Your information and permissions</b></li>
+                <li>⬇️ Select <b>Download your information</b> → <b>Create export</b> → <b>Export to device</b></li>
+                <li>📝 Customize: Turn ON only <b>Followers</b> & <b>Following</b>, date range: <b>All time</b></li>
+                <li>⏳ Wait for download (device or email)</li>
+                <li>📂 Open folder → find <b>followers_1</b> & <b>following</b> files (HTML or JSON)</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
 <script>
-/* =====================================================
-   GLOBALS
-===================================================== */
-let globalFollowers = [];
-let globalFollowing = [];
-let globalList = [];
-let lastRemoved = null;
-
-/* =====================================================
-   THEME SYSTEM
-===================================================== */
-const themes = ["dark", "light", "barbie"];
+/* THEME SYSTEM */
+const themes = ["dark","light","barbie"];
 let themeIndex = 0;
-
 function loadTheme() {
     const saved = localStorage.getItem("theme");
-    if (saved && themes.includes(saved)) {
-        document.body.className = saved;
-        themeIndex = themes.indexOf(saved);
-    }
+    if(saved && themes.includes(saved)) { document.body.className = saved; themeIndex = themes.indexOf(saved); }
 }
 loadTheme();
-
 function switchTheme() {
-    themeIndex = (themeIndex + 1) % themes.length;
+    themeIndex = (themeIndex+1)%themes.length;
     const t = themes[themeIndex];
     document.body.className = t;
-    localStorage.setItem("theme", t);
+    localStorage.setItem("theme",t);
 }
 
-/* =====================================================
-   DRAG & DROP
-===================================================== */
+/* INFO MODAL */
+function showInfo(){ document.getElementById("infoModal").style.display="flex"; }
+function hideInfo(){ document.getElementById("infoModal").style.display="none"; }
+window.onclick = e => { if(e.target === document.getElementById("infoModal")) hideInfo(); };
+
+/* DRAG & DROP */
 setup("followersBox","followersFile");
 setup("followingBox","followingFile");
-
 function setup(boxId,inputId){
-    const box=document.getElementById(boxId);
-    const input=document.getElementById(inputId);
-
+    const box=document.getElementById(boxId), input=document.getElementById(inputId);
     box.onclick=()=>input.click();
-
-    box.ondragover=e=>{
-        e.preventDefault();
-        box.style.background="var(--box-hover)";
-    };
+    box.ondragover=e=>{ e.preventDefault(); box.style.background="var(--box-hover)"; };
     box.ondragleave=()=>box.style.background="";
-    box.ondrop=e=>{
-        e.preventDefault();
-        box.style.background="";
-        input.files=e.dataTransfer.files;
-        box.textContent=input.files[0].name;
-    };
-
-    input.onchange=()=>{
-        if(input.files.length) box.textContent=input.files[0].name;
-    };
+    box.ondrop=e=>{ e.preventDefault(); box.style.background=""; input.files=e.dataTransfer.files; box.textContent=input.files[0].name; };
+    input.onchange=()=>{ if(input.files.length) box.textContent=input.files[0].name; };
 }
 
-/* =====================================================
-   COMPARE
-===================================================== */
+/* COMPARE & PARSING */
+let globalFollowers=[], globalFollowing=[], globalList=[], lastRemoved=null;
+
 async function compare(){
     const folFile=document.getElementById("followersFile").files[0];
     const ingFile=document.getElementById("followingFile").files[0];
-
-    if(!folFile || !ingFile){
-        alert("Upload both files");
-        return;
-    }
-
-    document.getElementById("result").innerHTML = "<p>Loading…</p>";
-
+    if(!folFile || !ingFile){ alert("Upload both files"); return; }
+    document.getElementById("result").innerHTML="<p>Loading…</p>";
     globalFollowers = await extract(folFile);
     globalFollowing = await extract(ingFile);
-
     globalList = globalFollowing.filter(u=>!globalFollowers.includes(u));
-
     renderList();
 }
 
-/* =====================================================
-   PARSING
-===================================================== */
 async function extract(file){
     const text=await file.text();
-
     if(file.name.endsWith(".json")) return parseJSON(text);
     if(file.name.endsWith(".html")) return parseHTML(text);
-
     return [];
 }
 
 function clean(u){
     if(!u) return null;
-    u=u.trim();
-    u=u.replace(/^\/+/,"");
-    u=u.replace(/^_u\//,"");
-    u=u.replace(/^\/_u\//,"");
-    u=u.replace(/\/$/,"");
-    if(/^[a-zA-Z0-9._]+$/.test(u)) return u;
-    return null;
+    u=u.trim().replace(/^\/+/,"").replace(/^_u\//,"").replace(/^\/_u\//,"").replace(/\/$/,"");
+    return /^[a-zA-Z0-9._]+$/.test(u)?u:null;
 }
 
 function parseJSON(text){
     try{
-        let data = JSON.parse(text);
-        let out = [];
-
-        if (Array.isArray(data)) {
-            data.forEach(entry => {
-                const raw = entry?.string_list_data?.[0]?.value;
-                const user = clean(raw);
-                if (user) out.push(user);
-            });
-        }
-
-        if (data.relationships_following) {
-            data.relationships_following.forEach(entry => {
-                let user = entry.title ? clean(entry.title) : null;
-
-                if (!user && entry.string_list_data?.[0]?.href) {
-                    const extracted = entry.string_list_data[0].href.split("/").pop();
-                    user = clean(extracted);
-                }
-
-                if (user) out.push(user);
-            });
-        }
-
-        if (data.relationships_followers) {
-            data.relationships_followers.forEach(entry => {
-                const user = clean(entry.string_list_data?.[0]?.value);
-                if (user) out.push(user);
-            });
-        }
-
+        let data=JSON.parse(text), out=[];
+        if(Array.isArray(data)) data.forEach(e=>{ const u=clean(e?.string_list_data?.[0]?.value); if(u) out.push(u); });
+        if(data.relationships_following) data.relationships_following.forEach(e=>{
+            let u=e.title?clean(e.title):e.string_list_data?.[0]?.href?.split("/").pop();
+            u=clean(u); if(u) out.push(u);
+        });
+        if(data.relationships_followers) data.relationships_followers.forEach(e=>{
+            const u=clean(e.string_list_data?.[0]?.value); if(u) out.push(u);
+        });
         return [...new Set(out)];
-    }catch{
-        return [];
-    }
+    }catch{ return []; }
 }
 
 function parseHTML(html){
     const doc=new DOMParser().parseFromString(html,"text/html");
     let out=[];
-
-    [...doc.querySelectorAll("h2")].forEach(h=>{
-        const u=clean(h.textContent);
-        if(u) out.push(u);
-    });
-
+    [...doc.querySelectorAll("h2")].forEach(h=>{ const u=clean(h.textContent); if(u) out.push(u); });
     [...doc.querySelectorAll("a")].forEach(a=>{
-        try{
-            const url=new URL(a.href);
-            if(url.hostname.includes("instagram")){
-                let u=url.pathname.replace(/^\/_u\//,"").replace(/\//g,"");
-                u=clean(u);
-                if(u) out.push(u);
-            }
-        }catch{}
+        try{ const url=new URL(a.href); if(url.hostname.includes("instagram")){ let u=clean(url.pathname.replace(/^\/_u\//,"").replace(/\//g,"")); if(u) out.push(u); } }catch{}
     });
-
     return [...new Set(out)];
 }
 
-/* =====================================================
-   RENDER LIST
-===================================================== */
+/* RENDER LIST */
 function renderList(){
     const div=document.getElementById("result");
-    div.innerHTML = `
-        <p><b>Not Following Back:</b> ${globalList.length}</p>
-        <hr>
-    `;
-
+    div.innerHTML=`<p><b>Not Following Back:</b> ${globalList.length}</p><hr>`;
     globalList.forEach(u=>{
         const row=document.createElement("div");
         row.className="user-row";
-
-        row.innerHTML = `
-            <a href="https://instagram.com/${u}" target="_blank">${u}</a>
-            <button class="remove-btn" onclick="removeUser('${u}')">Remove</button>
-        `;
-
+        row.innerHTML=`<a href="https://instagram.com/${u}" target="_blank">${u}</a>
+        <button class="remove-btn" onclick="removeUser('${u}')">Remove</button>`;
         div.appendChild(row);
     });
-
     updateTextarea();
 }
 
-/* =====================================================
-   REMOVE + UNDO
-===================================================== */
-function removeUser(username){
-    lastRemoved = username;
-    globalList = globalList.filter(u => u !== username);
-    renderList();
-    document.getElementById("undoBtn").disabled = false;
-}
+/* REMOVE + UNDO */
+function removeUser(u){ lastRemoved=u; globalList=globalList.filter(x=>x!==u); renderList(); document.getElementById("undoBtn").disabled=false; }
+function undoRemove(){ if(!lastRemoved) return; globalList.push(lastRemoved); lastRemoved=null; globalList.sort(); renderList(); document.getElementById("undoBtn").disabled=true; }
 
-function undoRemove(){
-    if(!lastRemoved) return;
-    globalList.push(lastRemoved);
-    lastRemoved = null;
-    globalList.sort();
-    renderList();
-    document.getElementById("undoBtn").disabled = true;
-}
-
-/* =====================================================
-   TEXT EXPORT
-===================================================== */
+/* TEXT EXPORT + COPY */
 function updateTextarea(){
-    let txt = `Not Following Back: ${globalList.length}\n\n`;
-    globalList.forEach(u => {
-        txt += `${u} - https://instagram.com/${u}\n`;
-    });
-    document.getElementById("output").value = txt;
+    let txt=`Not Following Back: ${globalList.length}\n\n`;
+    globalList.forEach(u=>{ txt+=`${u} - https://instagram.com/${u}\n`; });
+    document.getElementById("output").value=txt;
 }
 
-/* =====================================================
-   COPY
-===================================================== */
 function copyResults(){
     navigator.clipboard.writeText(document.getElementById("output").value);
     alert("Copied!");
 }
-</script>
 
+// Load ZIP files from localStorage and prefill boxes
+window.addEventListener("load", () => {
+    const zipFiles = JSON.parse(localStorage.getItem("zipFiles") || "[]");
+    const display = document.getElementById("zipFilesDisplay");
+    if(zipFiles.length){
+        
+        // Prepare a single DataTransfer to assign files
+        const dtFollowers = new DataTransfer();
+        const dtFollowing = new DataTransfer();
+
+        zipFiles.forEach(f => {
+            const blob = new Blob([f.content], {type: "text/plain"});
+            const fileObj = new File([blob], f.name, {type: "text/plain"});
+            
+            if(f.type === 'followers') dtFollowers.items.add(fileObj);
+            if(f.type === 'following') dtFollowing.items.add(fileObj);
+        });
+
+        if(dtFollowers.files.length > 0) {
+            document.getElementById("followersFile").files = dtFollowers.files;
+            document.getElementById("followersBox").textContent = dtFollowers.files[0].name;
+        }
+        if(dtFollowing.files.length > 0) {
+            document.getElementById("followingFile").files = dtFollowing.files;
+            document.getElementById("followingBox").textContent = dtFollowing.files[0].name;
+        }
+    }
+});
+
+
+</script>
 </body>
 </html>
