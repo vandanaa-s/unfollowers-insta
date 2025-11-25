@@ -44,26 +44,90 @@ body {
     transition: 0.3s;
 }
 
-h2 { font-family: 'Arial', sans-serif; font-weight: bold; font-style: italic; font-size: 32px; letter-spacing: 1px; text-align: center; color: #fff; margin-bottom: 20px; color: var(--heading-text); }
-h3 { font-family: 'Brush Script MT', cursive, 'Segoe Script', sans-serif; font-size: 22px; text-align:center; color: #ccc; margin-bottom: 20px; color: var(--heading-text);  }
+h2 { font-family: 'Arial', sans-serif; font-weight: bold; font-style: italic; font-size: 32px; letter-spacing: 1px; text-align: center; color: var(--heading-text); margin-bottom: 20px; }
+h3 { font-family: 'Brush Script MT', cursive, 'Segoe Script', sans-serif; font-size: 22px; text-align:center; color: var(--heading-text);  margin-bottom: 20px; }
 
 /* THEME & INFO BUTTONS */
-#themeToggle, #zipBtn {
+#themeToggle, #zipUploadBtn {
     position: fixed; top: 15px; padding: 8px 14px; border-radius: 8px; background: var(--btn-bg); color: var(--text); border: 1px solid #666; cursor:pointer; z-index:999; transition:0.3s;
 }
 #themeToggle { right:15px; }
-#zipBtn { left:15px; }
-#themeToggle:hover, #zipBtn:hover { background: var(--btn-hover); }
+#zipUploadBtn { left:15px; }
+#themeToggle:hover, #zipUploadBtn:hover { background: var(--btn-hover); }
 
 #infoIcon {
     position: fixed; top:28px; right:100px; width:28px; height:28px; background: var(--row-bg); color: var(--text); border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; cursor:pointer; box-shadow:0 0 5px rgba(0,0,0,0.5); z-index:1000; transition:0.2s;
 }
 #infoIcon:hover { background: var(--box-hover); }
 
-/* MODAL */
-.modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-.modal-content { background: var(--row-bg); padding:20px; border-radius:10px; max-width:400px; color: var(--text); }
-.modal .close { background:transparent; border:none; color: var(--link); font-size:18px; cursor:pointer; float:right; }
+#copyResultsBtn {
+    display:block;
+    margin: 10px auto;
+    padding: 8px 14px;
+    background: var(--btn-bg);
+    color: var(--text);
+    border:1px solid #444;
+    border-radius:6px;
+    cursor:pointer;
+}
+#copyResultsBtn:hover { background: var(--btn-hover); }
+
+/* Modal styling enhancements */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; 
+}
+
+.modal-content {
+    background: var(--row-bg);
+    padding: 25px 20px;
+    border-radius: 12px;
+    max-width: 450px;
+    color: var(--text);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* Step card */
+.modal-step {
+    margin: 10px 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+}
+
+/* Highlighted keywords */
+.highlight { color: var(--link); font-weight: bold; }
+
+/* Modal buttons */
+.modal-content button {
+    margin: 6px 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: var(--btn-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.modal-content button:hover { background: var(--btn-hover); }
+
+/* Step counter */
+.step-counter {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
 
 /* BOXES */
 .box { border:2px dashed var(--box-border); padding:15px; margin:10px 0; text-align:center; border-radius:8px; cursor:pointer; }
@@ -93,7 +157,7 @@ button:hover { background: var(--btn-hover); }
     body{margin:10px;padding:10px;}
     h2,h3{font-size:18px;}
     .box{padding:12px;font-size:14px;}
-    #undoBtn,button,#themeToggle,#zipBtn,#infoIcon{width:100%; margin-top:6px; font-size:14px; position:relative; top:auto; left:auto; right:auto;}
+    #undoBtn,button,#themeToggle,#zipUploadBtn,#infoIcon{width:100%; margin-top:6px; font-size:14px; position:relative; top:auto; left:auto; right:auto;}
     .user-row{flex-direction:column;align-items:flex-start;padding:8px;}
     .user-row a{margin-bottom:6px;}
     textarea{height:120px;font-size:14px;}
@@ -103,10 +167,10 @@ button:hover { background: var(--btn-hover); }
 <body>
 
 <button id="themeToggle" onclick="switchTheme()">Theme</button>
-<button id="zipBtn" onclick="location.href='zip.html'">Zip Extractor</button>
+<button id="zipUploadBtn">Zip Extractor</button>
 <div id="infoIcon" onclick="showInfo()">?</div>
 
-<h2>Sleezy Unfollowers Check</h2>
+<h2>Who Unfollowed you?</h2>
 
 <b>Followers File</b>
 <div class="box" id="followersBox">Click or Drop Followers File</div>
@@ -116,43 +180,129 @@ button:hover { background: var(--btn-hover); }
 <div class="box" id="followingBox">Click or Drop Following File</div>
 <input type="file" id="followingFile" hidden>
 
-<button onclick="compare()">Compare</button>
-<button onclick="copyResults()">Copy</button>
-<button id="undoBtn" onclick="undoRemove()" disabled>Undo Remove</button>
+<button onclick="compare()">Get Results</button>
 
-<h3>Results</h3>
-<div id="result"></div>
-<textarea id="output"></textarea>
+<div id="resultsContainer" style="display:none; margin-top:20px;">
+    <h3 id="resultsHeading">
+        Results
+        <button id="copyResultsBtn" onclick="copyResults()" style="margin-left:10px; font-size:14px;">📋 Copy Results</button>
+        <button id="undoBtn" onclick="undoRemove()" style="margin-left:10px;">Undo Remove</button>
+    </h3>
+    <div id="result"></div>
+    <textarea id="output" readonly style="width:100%; height:150px; margin-top:10px;"></textarea>
+</div>
 
 <!-- INFO MODAL -->
 <div id="infoModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="hideInfo()">&times;</span>
-    <div id="infoPanel">
-      <h3>📥 How to Export Your Instagram Data</h3>
-      <ol>
-        <li>⚙️ Open <b>Settings</b> → <b>Accounts Center</b> → <b>Your information and permissions</b></li>
-        <li>⬇️ Select <b>Download your information</b> → <b>Create export</b> → <b>Export to device</b></li>
-        <li>📝 Customize: Turn ON only <b>Followers</b> & <b>Following</b>, date range: <b>All time</b></li>
-        <li>⏳ Wait for download (device or email)</li>
-        <li>📂 Open folder → find <b>followers_1</b> & <b>following</b> files (HTML or JSON)</li>
-        <li>💡 Optional: Upload the ZIP file into <b>Zip Extractor</b> to automatically extract followers/following files</li>
-      </ol>
-    </div>
+  <div class="modal-content" id="infoPanel">
+    <!-- Dynamic content injected by JS -->
   </div>
 </div>
+
+<input type="file" id="zipFileInput" hidden>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 /* THEME */
 const themes=["dark","light","barbie"]; let themeIndex=0;
-function loadTheme(){ const saved=localStorage.getItem("theme"); if(saved && themes.includes(saved)){document.body.className=saved; themeIndex=themes.indexOf(saved);}}
+function loadTheme(){ const saved=localStorage.getItem("theme"); if(saved && themes.includes(saved)){document.body.className=saved; themeIndex=themes.indexOf(saved);} }
 loadTheme();
 function switchTheme(){ themeIndex=(themeIndex+1)%themes.length; const t=themes[themeIndex]; document.body.className=t; localStorage.setItem("theme",t); }
 
-/* INFO MODAL */
-function showInfo(){ document.getElementById("infoModal").style.display="flex"; }
-function hideInfo(){ document.getElementById("infoModal").style.display="none"; }
-window.onclick=e=>{ if(e.target===document.getElementById("infoModal")) hideInfo(); }
+/* ======================
+   INFO MODAL & INTRO TUTORIAL
+====================== */
+const infoModal = document.getElementById("infoModal");
+const infoPanel = document.getElementById("infoPanel");
+let currentPart = 0;
+
+const introParts = [
+    { 
+        title: "Welcome to UnGram 👋",
+        content: `
+        <div class="modal-step">
+            <p>This tool helps you find Instagram users who don't follow you back.</p>
+            <p>We’ll guide you step by step through the process.</p>
+        </div>
+        `
+    },
+    { 
+        title: "Two Ways to Upload Your Data",
+        content: `
+        <div class="modal-step">
+            <p>💾 If you have already exported your <span class="highlight">followers</span> and <span class="highlight">following</span> files individually, you can upload them directly to the boxes on the main page.</p>
+        </div>
+        <div class="modal-step">
+            <p>📂 Otherwise, you can use the <span class="highlight">ZIP Extractor</span> button to upload the exported ZIP file. This will automatically extract the needed files for you.</p>
+        </div>
+        `
+    },
+    { 
+        title: "How to Export a ZIP from Instagram",
+        content: `
+        <div class="modal-step">
+            <p>⚙️ Open <b>Settings → Accounts Center → Your information & permissions</b></p>
+        </div>
+        <div class="modal-step">
+            <p>⬇️ Select <b>Download your information → Create export → Export to device</b></p>
+        </div>
+        <div class="modal-step">
+            <p>📝 Turn ON only <b>Followers</b> & <b>Following</b>, date range: <b>All time</b></p>
+        </div>
+        <div class="modal-step">
+            <p>⏳ Wait for the download (device or email). You will get a <b>ZIP file</b> containing the files.</p>
+        </div>
+        <div class="modal-step">
+            <p>📂 Open the ZIP → look for <b>followers_1</b> and <b>following</b> files (HTML or JSON) → upload using the boxes or ZIP extractor.</p>
+        </div>
+        `
+    },
+    { 
+        title: "Buttons Overview",
+        content: `
+        <div class="modal-step">
+            <ul>
+                <li><b>Get Results:</b> Compare your followers & following files.</li>
+                <li><b>Copy Results:</b> Copy all unfollowers to your clipboard.</li>
+                <li><b>Undo Remove:</b> Restore the last user you manually removed. (Useful if some accounts are deactivated)</li>
+                <li><b>Theme:</b> Switch between Dark, Light, and Fun “Barbie” theme.</li>
+                <li><b>Upload ZIP:</b> Upload a ZIP containing both followers and following files automatically.</li>
+            </ul>
+        </div>
+        `
+    }
+];
+
+function updateModalPart() {
+    const part = introParts[currentPart];
+    infoPanel.innerHTML = `
+        <div class="step-counter">Step ${currentPart+1} of ${introParts.length}</div>
+        <h3>${part.title}</h3>
+        ${part.content}
+        <div style="margin-top:15px;">
+            ${currentPart>0?'<button onclick="prevPart()">⬅️ Previous</button>':''}
+            ${currentPart<introParts.length-1?'<button onclick="nextPart()">Next ➡️</button>':'<button onclick="finishIntro()">Got it!</button>'}
+        </div>
+    `;
+}
+
+
+function showInfo() {
+    currentPart = 0;        
+    updateModalPart();      
+    infoModal.style.display = "flex";  
+}
+
+// Hide the info modal
+function hideInfo() {
+    infoModal.style.display = "none";
+}
+
+
+function nextPart(){ if(currentPart<introParts.length-1){currentPart++; updateModalPart();} }
+function prevPart(){ if(currentPart>0){currentPart--; updateModalPart();} }
+function finishIntro(){ hideInfo(); }
 
 /* DRAG & DROP FILES */
 function setup(boxId,inputId){
@@ -169,115 +319,79 @@ setup("followingBox","followingFile");
 /* COMPARE & PARSING */
 let globalFollowers=[], globalFollowing=[], globalList=[], lastRemoved=null;
 
-async function compare(){
+async function compare() {
     const folFile=document.getElementById("followersFile").files[0];
     const ingFile=document.getElementById("followingFile").files[0];
-    if(!folFile || !ingFile){ alert("Upload both files"); return; }
+    if(!folFile||!ingFile){alert("Upload both files");return;}
     document.getElementById("result").innerHTML="<p>Loading…</p>";
-    globalFollowers = await extract(folFile);
-    globalFollowing = await extract(ingFile);
-    globalList = globalFollowing.filter(u=>!globalFollowers.includes(u));
+    globalFollowers=await extract(folFile);
+    globalFollowing=await extract(ingFile);
+    globalList=globalFollowing.filter(u=>!globalFollowers.includes(u));
+    document.getElementById("resultsContainer").style.display="block";
     renderList();
 }
 
-async function extract(file){
-    const text=await file.text();
-    if(file.name.endsWith(".json")) return parseJSON(text);
-    if(file.name.endsWith(".html")) return parseHTML(text);
-    return [];
-}
-
-function clean(u){
-    if(!u) return null;
-    u=u.trim().replace(/^\/+/,"").replace(/^_u\//,"").replace(/^\/_u\//,"").replace(/\/$/,"");
-    return /^[a-zA-Z0-9._]+$/.test(u)?u:null;
-}
-
-function parseJSON(text){
-    try{
-        let data=JSON.parse(text), out=[];
-        if(Array.isArray(data)) data.forEach(e=>{ const u=clean(e?.string_list_data?.[0]?.value); if(u) out.push(u); });
-        if(data.relationships_following) data.relationships_following.forEach(e=>{
-            let u=e.title?clean(e.title):e.string_list_data?.[0]?.href?.split("/").pop();
-            u=clean(u); if(u) out.push(u);
-        });
-        if(data.relationships_followers) data.relationships_followers.forEach(e=>{
-            const u=clean(e.string_list_data?.[0]?.value); if(u) out.push(u);
-        });
-        return [...new Set(out)];
-    }catch{ return []; }
-}
-
-function parseHTML(html){
-    const doc=new DOMParser().parseFromString(html,"text/html");
-    let out=[];
-    [...doc.querySelectorAll("h2")].forEach(h=>{ const u=clean(h.textContent); if(u) out.push(u); });
-    [...doc.querySelectorAll("a")].forEach(a=>{
-        try{ const url=new URL(a.href); if(url.hostname.includes("instagram")){ let u=clean(url.pathname.replace(/^\/_u\//,"").replace(/\//g,"")); if(u) out.push(u); } }catch{}
-    });
-    return [...new Set(out)];
-}
+async function extract(file){ const text=await file.text(); if(file.name.endsWith(".json")) return parseJSON(text); if(file.name.endsWith(".html")) return parseHTML(text); return []; }
+function clean(u){ if(!u)return null; u=u.trim().replace(/^\/+/,"").replace(/^_u\//,"").replace(/^\/_u\//,"").replace(/\/$/,""); return /^[a-zA-Z0-9._]+$/.test(u)?u:null; }
+function parseJSON(text){ try{ let data=JSON.parse(text), out=[]; if(Array.isArray(data)) data.forEach(e=>{ const u=clean(e?.string_list_data?.[0]?.value); if(u) out.push(u); }); if(data.relationships_following) data.relationships_following.forEach(e=>{ let u=e.title?clean(e.title):e.string_list_data?.[0]?.href?.split("/").pop(); u=clean(u); if(u) out.push(u); }); if(data.relationships_followers) data.relationships_followers.forEach(e=>{ const u=clean(e.string_list_data?.[0]?.value); if(u) out.push(u); }); return [...new Set(out)]; }catch{return [];} }
+function parseHTML(html){ const doc=new DOMParser().parseFromString(html,"text/html"); const out=new Set(); [...doc.querySelectorAll("h2")].forEach(h=>{ const u=clean(h.textContent); if(u) out.add(u); }); [...doc.querySelectorAll("a")].forEach(a=>{ try{ const url=new URL(a.href,"https://instagram.com"); if(!url.hostname.includes("instagram.com")) return; const path=url.pathname.replace(/^\/+|\/+$/g,""); if(path&&/^[a-zA-Z0-9._]+$/.test(path)) out.add(path);}catch{} }); return Array.from(out); }
 
 /* RENDER LIST */
-function renderList(){
+function renderList() {
     const div=document.getElementById("result");
     div.innerHTML=`<p><b>Not Following Back:</b> ${globalList.length}</p><hr>`;
     globalList.forEach(u=>{
         const row=document.createElement("div");
         row.className="user-row";
-        row.innerHTML=`<a href="https://instagram.com/${u}" target="_blank">${u}</a>
-        <button class="remove-btn" onclick="removeUser('${u}')">Remove</button>`;
+        row.innerHTML=`<a href="https://instagram.com/${u}" target="_blank">${u}</a><button class="remove-btn" onclick="removeUser('${u}')">Remove</button>`;
         div.appendChild(row);
     });
     updateTextarea();
+    document.getElementById("copyResultsBtn").style.display=globalList.length?"inline-block":"none";
+    document.getElementById("undoBtn").style.display=globalList.length?"inline-block":"none";
 }
 
-/* REMOVE + UNDO */
-function removeUser(u){ lastRemoved=u; globalList=globalList.filter(x=>x!==u); renderList(); document.getElementById("undoBtn").disabled=false; }
-function undoRemove(){ if(!lastRemoved) return; globalList.push(lastRemoved); lastRemoved=null; globalList.sort(); renderList(); document.getElementById("undoBtn").disabled=true; }
+const undoBtn=document.getElementById("undoBtn");
+undoBtn.style.display="none"; undoBtn.disabled=true;
+function removeUser(u){ lastRemoved=u; globalList=globalList.filter(x=>x!==u); renderList(); undoBtn.style.display="inline-block"; undoBtn.disabled=false; }
+function undoRemove(){ if(!lastRemoved)return; globalList.push(lastRemoved); lastRemoved=null; globalList.sort(); renderList(); undoBtn.style.display="none"; undoBtn.disabled=true; }
+function updateTextarea(){ let txt=`Not Following Back: ${globalList.length}\n\n`; globalList.forEach(u=>{ txt+=`${u} - https://instagram.com/${u}\n`; }); document.getElementById("output").value=txt; }
+function copyResults(){ navigator.clipboard.writeText(document.getElementById("output").value); alert("Copied!"); }
 
-/* TEXT EXPORT + COPY */
-function updateTextarea(){
-    let txt=`Not Following Back: ${globalList.length}\n\n`;
-    globalList.forEach(u=>{ txt+=`${u} - https://instagram.com/${u}\n`; });
-    document.getElementById("output").value=txt;
-}
+/* ZIP UPLOADER */
+const zipUploadBtn=document.getElementById('zipUploadBtn');
+const zipInput=document.getElementById('zipFileInput');
+zipUploadBtn.onclick=()=>zipInput.click();
+zipInput.ondragover=e=>{ e.preventDefault(); zipUploadBtn.style.background="#444"; }
+zipInput.ondragleave=()=>zipUploadBtn.style.background="";
+zipInput.ondrop=e=>{ e.preventDefault(); zipUploadBtn.style.background=""; handleZip(e.dataTransfer.files[0]); }
+zipInput.onchange=()=>{ if(zipInput.files.length) handleZip(zipInput.files[0]); }
 
-function copyResults(){
-    navigator.clipboard.writeText(document.getElementById("output").value);
-    alert("Copied!");
-}
-
-// Load ZIP files from localStorage and prefill boxes
-window.addEventListener("load", () => {
-    const zipFiles = JSON.parse(localStorage.getItem("zipFiles") || "[]");
-    const display = document.getElementById("zipFilesDisplay");
-    if(zipFiles.length){
-        
-        // Prepare a single DataTransfer to assign files
-        const dtFollowers = new DataTransfer();
-        const dtFollowing = new DataTransfer();
-
-        zipFiles.forEach(f => {
-            const blob = new Blob([f.content], {type: "text/plain"});
-            const fileObj = new File([blob], f.name, {type: "text/plain"});
-            
-            if(f.type === 'followers') dtFollowers.items.add(fileObj);
-            if(f.type === 'following') dtFollowing.items.add(fileObj);
-        });
-
-        if(dtFollowers.files.length > 0) {
-            document.getElementById("followersFile").files = dtFollowers.files;
-            document.getElementById("followersBox").textContent = dtFollowers.files[0].name;
+async function handleZip(file){
+    if(!file.name.endsWith('.zip')){alert('Not a ZIP file');return;}
+    const jszip=new JSZip();
+    const zip=await jszip.loadAsync(file);
+    let followersFile=null;
+    let followingFile=null;
+    for(const f of Object.values(zip.files)){
+        if(f.dir) continue;
+        const fname=f.name.split('/').pop().toLowerCase();
+        const text=(await f.async('text')).trim();
+        if(!followersFile && fname.includes('followers') && (fname.startsWith('followers') || fname.includes('_followers'))){
+            followersFile=new File([text], f.name.split('/').pop(), {type:"text/html"});
         }
-        if(dtFollowing.files.length > 0) {
-            document.getElementById("followingFile").files = dtFollowing.files;
-            document.getElementById("followingBox").textContent = dtFollowing.files[0].name;
+        if(!followingFile && fname.includes('following') && (fname.startsWith('following') || fname.includes('_following'))){
+            followingFile=new File([text], f.name.split('/').pop(), {type:"text/html"});
         }
     }
-});
-
-
+    if(!followersFile || !followingFile){ alert('Could not find both followers and following files in ZIP.'); return; }
+    const dtF=new DataTransfer(); dtF.items.add(followersFile);
+    const dtG=new DataTransfer(); dtG.items.add(followingFile);
+    document.getElementById("followersFile").files=dtF.files;
+    document.getElementById("followingFile").files=dtG.files;
+    document.getElementById("followersBox").textContent=followersFile.name;
+    document.getElementById("followingBox").textContent=followingFile.name;
+}
 </script>
 
 </body>
